@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 
 import low = require('lowdb')
 import FileSync = require('lowdb/adapters/FileSync')
-import assert from 'assert'
 const adapter = new FileSync('db.json')
 const db = low(adapter)
 

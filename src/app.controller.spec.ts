@@ -1,12 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
-import { Param } from '@nestjs/common'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-// const fse = require('fs-extra')
-// import { promisify } from 'util'
 import { exec } from 'child_process'
-// const sleep = promisify(setTimeout)
 
 describe('AppController', () => {
   let appController: AppController
@@ -27,17 +22,6 @@ describe('AppController', () => {
   afterAll(async () => {
     exec('rm -f db.json')
   })
-
-  // beforeEach(async () => {
-  //   const app: TestingModule = await Test.createTestingModule({
-  //     controllers: [AppController],
-  //     providers: [AppService],
-  //   }).compile()
-  //
-  //   appController = app.get<AppController>(AppController)
-  //   appService = app.get<AppService>(AppService)
-  //   appService.testDB()
-  // })
 
   describe('root', () => {
     it('should return "Hello World stuff!"', () => {
