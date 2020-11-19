@@ -59,11 +59,11 @@ describe('AppController', () => {
         method: 'BPA Gene Expression',
         result: { data: 'data' },
       }
-      const result1 = appController.addGeneSetResult(params)
+      const result1 = appController.addGeneSetResult(params, params.result)
       expect(result1.error).toBeUndefined()
       expect(result1.result.data).toEqual('data')
       expect(appService.getGeneSets().length).toEqual(4)
-      const result2 = appController.addGeneSetResult(params)
+      const result2 = appController.addGeneSetResult(params, params.result)
       expect(result2.error).toBeDefined()
     })
 
@@ -73,7 +73,7 @@ describe('AppController', () => {
         method: 'BPA Gene Expression',
         result: { data: 'data4' },
       }
-      const result1 = appController.addGeneSetResult(params)
+      const result1 = appController.addGeneSetResult(params, params.result)
       expect(result1.error).toBeUndefined()
       expect(result1.result.data).toEqual('data4')
       const result2 = appController.getGeneSet({ geneset: 'h4.gmt' })
@@ -96,10 +96,10 @@ describe('AppController', () => {
         method: 'BPA Gene Expression',
         result: { data: 'data2' },
       }
-      const result1 = appController.addGeneSetResult(params)
+      const result1 = appController.addGeneSetResult(params, params.result)
       expect(result1.error).toBeUndefined()
       expect(result1.result.data).toEqual('data')
-      const result2 = appController.updateGeneSetResult(params2)
+      const result2 = appController.updateGeneSetResult(params2, params2.result)
       expect(result2.error).toBeUndefined()
       expect(result2.result.data).toEqual('data2')
     })
