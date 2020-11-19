@@ -25,7 +25,7 @@ export class AppService {
         result: { value: 'bpa all gmt' },
       },
     ]
-    return db.defaults(defaultDb).write()
+    return db.defaults({ results: defaultDb }).write()
   }
 
   addGeneSetResult(method: string, geneset: string, result: any): any {
