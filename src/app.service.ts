@@ -38,6 +38,7 @@ export class AppService {
   }
 
   addGeneSetResult(method: string, geneset: string, result: any): any {
+    console.log('adding gene set result', method, geneset, result)
     const existingResult = this.getGeneSetResult(method, geneset)
     if (existingResult.length > 0) {
       return {
