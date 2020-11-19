@@ -38,12 +38,19 @@ export class AppService {
   }
 
   addGeneSetResult(method: string, geneset: string, result: any): any {
+    const existingResult = this.getGeneSetResult(method, geneset)
+    if (existingResult.length>0) {
+      return {
+        error: `Result with method: ${method} and geneset: ${geneset} already exists.`,
+      }
+    }
     const resultToAdd = {
       method: method,
       geneset: geneset,
       result: result,
     }
     db.get('results').push(resultToAdd).write()
+    return resultToAdd
   }
 
   getGeneSetResult(method: string, geneset: string): any {

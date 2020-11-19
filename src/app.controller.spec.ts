@@ -3,10 +3,10 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { Param } from '@nestjs/common'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const fse = require('fs-extra')
-import { promisify } from 'util'
+// const fse = require('fs-extra')
+// import { promisify } from 'util'
 import { exec } from 'child_process'
-const sleep = promisify(setTimeout)
+// const sleep = promisify(setTimeout)
 
 describe('AppController', () => {
   let appController: AppController
@@ -71,13 +71,14 @@ describe('AppController', () => {
       const params = {
         geneset: 'h2.gmt',
         method: 'BPA Gene Expression',
-        results: { data: 'data' },
+        result: { data: 'data' },
       }
-      appController.addGeneSetResult(params)
-      console.log('getting gene sets ')
-      const outputGeneSets = appService.getGeneSets()
-      console.log(outputGeneSets)
+      const result1 = appController.addGeneSetResult(params)
+      expect(result1.error).toBeUndefined()
+      expect(result1.result.data).toEqual('data')
       expect(appService.getGeneSets().length).toEqual(4)
+      const result2 = appController.addGeneSetResult(params)
+      expect(result2.error).toBeDefined()
     })
 
     // it('If gene set already exists, then fail', () => {
