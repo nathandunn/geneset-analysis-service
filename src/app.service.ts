@@ -38,11 +38,7 @@ export class AppService {
   }
 
   addGeneSetResult(method: string, geneset: string, result: any): any {
-    // const results = db.get(geneset)
-    // if(results===undefined){
-    //
-    // }
-    db.get(geneset).push({ result: result })
+    db.get(geneset).push({ result: result }).write()
   }
 
   getGeneSetResult(method: string, geneset: string): any {
@@ -63,6 +59,14 @@ export class AppService {
     return db
       .get('results')
       .filter({ method: method })
+      .map((r) => r.geneset)
+      .value()
+  }
+
+  getGeneSet(geneset: any) {
+    return db
+      .get('results')
+      .filter({ geneset: geneset })
       .map((r) => r.geneset)
       .value()
   }

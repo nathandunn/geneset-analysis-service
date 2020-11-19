@@ -15,7 +15,6 @@ describe('AppController', () => {
       providers: [AppService],
     }).compile()
 
-    console.log('testing')
     if (fs.existsSync('db.json')) {
       fs.removeSync('db.son')
     }
@@ -43,6 +42,13 @@ describe('AppController', () => {
       const param = {}
       param['method'] = 'BPA Gene Expression'
       expect(appController.getGeneSetsForAnalysis(param)).toEqual(TEST_GENE_SET)
+    })
+
+    it('Get one gene set', () => {
+      const TEST_GENE_SET = ['hallmark.gmt']
+      expect(appController.getGeneSet({ geneset: 'hallmark.gmt' })).toEqual(
+        TEST_GENE_SET,
+      )
     })
   })
 })

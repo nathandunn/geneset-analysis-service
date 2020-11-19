@@ -23,25 +23,19 @@ export class AppController {
 
   @Get('/geneset/:geneset')
   getGeneSet(@Param() params): any {
-    return {
-      geneset: params.geneset,
-    }
+    return this.appService.getGeneSet(params.geneset)
   }
 
   @Get('/geneset/:method/:geneset')
   getGeneSetForAnalysis(@Param() params): any {
-    return this.appService.getGeneSetResult(params.method,params.geneset)
-    return {
-      geneset: params.geneset,
-      method: params.method,
-    }
+    return this.appService.getGeneSetResult(params.method, params.geneset)
   }
 
   @Post('/geneset/:method/:geneset')
   addGeneSetResult(@Param() params): any {
-    return {
-      geneset: params.geneset,
-      method: params.method,
-    }
+    const geneset = params.geneset
+    const method = params.method
+    const result = params.result
+    return this.appService.addGeneSetResult(method, geneset, result)
   }
 }
