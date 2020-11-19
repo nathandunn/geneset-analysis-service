@@ -20,8 +20,8 @@ export class AppController {
   @Get('/geneset/:analysis/:geneset')
   getGeneSetForAnalysis(@Param() params): any {
     return {
-      analysis: params.analysis,
       geneset: params.geneset,
+      analysis: params.analysis,
     }
   }
 }
