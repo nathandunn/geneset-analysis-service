@@ -3,26 +3,41 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { Param } from '@nestjs/common'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs-extra')
+const fse = require('fs-extra')
+import { promisify } from 'util'
+import { exec } from 'child_process'
+const sleep = promisify(setTimeout)
 
 describe('AppController', () => {
   let appController: AppController
   let appService: AppService
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    exec('rm -f db.json')
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [AppService],
     }).compile()
 
-    if (fs.existsSync('db.json')) {
-      fs.removeSync('db.son')
-    }
-    fs.ensureFileSync('db.json')
     appController = app.get<AppController>(AppController)
     appService = app.get<AppService>(AppService)
     appService.testDB()
   })
+
+  afterAll(async () => {
+    exec('rm -f db.json')
+  })
+
+  // beforeEach(async () => {
+  //   const app: TestingModule = await Test.createTestingModule({
+  //     controllers: [AppController],
+  //     providers: [AppService],
+  //   }).compile()
+  //
+  //   appController = app.get<AppController>(AppController)
+  //   appService = app.get<AppService>(AppService)
+  //   appService.testDB()
+  // })
 
   describe('root', () => {
     it('should return "Hello World stuff!"', () => {
@@ -50,5 +65,41 @@ describe('AppController', () => {
         TEST_GENE_SET,
       )
     })
+
+    it('Add a gene set', () => {
+      // const TEST_GENE_SET = ['hallmark.gmt']
+      const params = {
+        geneset: 'h2.gmt',
+        method: 'BPA Gene Expression',
+        results: { data: 'data' },
+      }
+      appController.addGeneSetResult(params)
+      console.log('getting gene sets ')
+      const outputGeneSets = appService.getGeneSets()
+      console.log(outputGeneSets)
+      expect(appService.getGeneSets().length).toEqual(4)
+    })
+
+    // it('If gene set already exists, then fail', () => {
+    //   // const TEST_GENE_SET = ['hallmark.gmt']
+    //   const params = {
+    //     geneset: 'h2.gmt',
+    //     method: 'BPA Gene Expression',
+    //     result: { data: 'data' },
+    //   }
+    //   appController.addGeneSetResult(params)
+    //   console.log('getting gene sets ')
+    //   const outputGeneSets = appService.getGeneSets()
+    //   console.log(outputGeneSets)
+    //   expect(appService.getGeneSets().length).toEqual(4)
+    //   expect(appService.getGeneSet('h2.gmt').result.data).toEqual('data')
+    // })
+
+    // it('Update a gene set', () => {
+    //   const TEST_GENE_SET = ['hallmark.gmt']
+    //   expect(appController.getGeneSet({ geneset: 'hallmark.gmt' })).toEqual(
+    //     TEST_GENE_SET,
+    //   )
+    // })
   })
 })

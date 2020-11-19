@@ -38,7 +38,12 @@ export class AppService {
   }
 
   addGeneSetResult(method: string, geneset: string, result: any): any {
-    db.get(geneset).push({ result: result }).write()
+    const resultToAdd = {
+      method: method,
+      geneset: geneset,
+      result: result,
+    }
+    db.get('results').push(resultToAdd).write()
   }
 
   getGeneSetResult(method: string, geneset: string): any {
