@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common'
+import { Controller, Get, Param, Post } from '@nestjs/common'
 import { AppService } from './app.service'
 
 @Controller()
@@ -10,6 +10,17 @@ export class AppController {
     return this.appService.getHello()
   }
 
+  @Get('/geneset/')
+  getGeneSets(): any {
+    return this.appService.getGeneSets()
+  }
+
+  @Get('/geneset/:method')
+  getGeneSetsForAnalysis(@Param() params): any {
+    const method: string = params.method
+    return this.appService.getGeneSetsForAnalysis(method)
+  }
+
   @Get('/geneset/:geneset')
   getGeneSet(@Param() params): any {
     return {
@@ -17,11 +28,20 @@ export class AppController {
     }
   }
 
-  @Get('/geneset/:analysis/:geneset')
+  @Get('/geneset/:method/:geneset')
   getGeneSetForAnalysis(@Param() params): any {
+    return this.appService.getGeneSetResult(params.method,params.geneset)
     return {
       geneset: params.geneset,
-      analysis: params.analysis,
+      method: params.method,
+    }
+  }
+
+  @Post('/geneset/:method/:geneset')
+  addGeneSetResult(@Param() params): any {
+    return {
+      geneset: params.geneset,
+      method: params.method,
     }
   }
 }

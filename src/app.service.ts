@@ -11,8 +11,7 @@ export class AppService {
     return 'Hello World!asdf123'
   }
 
-  initDB(): any {
-    // Set some defaults (required if your JSON file is empty)
+  testDB(): any {
     const defaultDb = [
       {
         method: 'BPA Gene Expression',
@@ -24,8 +23,18 @@ export class AppService {
         geneset: 'bpaAll.gmt',
         result: { value: 'bpa all gmt' },
       },
+      {
+        method: 'Paradigm',
+        geneset: 'paradigmIPL.gmt',
+        result: { value: 'bpa all gmt' },
+      },
     ]
     return db.defaults({ results: defaultDb }).write()
+  }
+
+  initDB(): any {
+    // Set some defaults (required if your JSON file is empty)
+    return db.defaults({ results: [] }).write()
   }
 
   addGeneSetResult(method: string, geneset: string, result: any): any {
@@ -37,7 +46,24 @@ export class AppService {
   }
 
   getGeneSetResult(method: string, geneset: string): any {
-    return db.get(geneset)
-    db.set('method')
+    return db
+      .get('results')
+      .filter({ method: method, geneset: geneset })
+      .value()
+  }
+
+  getGeneSets() {
+    return db
+      .get('results')
+      .map((r) => r.geneset)
+      .value()
+  }
+
+  getGeneSetsForAnalysis(method: string) {
+    return db
+      .get('results')
+      .filter({ method: method })
+      .map((r) => r.geneset)
+      .value()
   }
 }

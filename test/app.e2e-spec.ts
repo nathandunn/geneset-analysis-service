@@ -11,6 +11,8 @@ describe('AppController (e2e)', () => {
       imports: [AppModule],
     }).compile()
 
+    // remove db.json
+    // add empty db.som
     app = moduleFixture.createNestApplication()
     await app.init()
   })
