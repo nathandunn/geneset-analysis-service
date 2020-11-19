@@ -44,6 +44,8 @@ export class AppController {
     const geneset = params.geneset
     const method = params.method
     // const result = data.result
+    console.log('adding gene set results ')
+    console.log(data)
     return this.appService.addGeneSetResult(method, geneset, data)
   }
 
