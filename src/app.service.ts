@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import low = require('lowdb')
 import FileSync = require('lowdb/adapters/FileSync')
+import assert from 'assert'
 const adapter = new FileSync('db.json')
 const db = low(adapter)
 
@@ -39,7 +40,7 @@ export class AppService {
 
   addGeneSetResult(method: string, geneset: string, result: any): any {
     const existingResult = this.getGeneSetResult(method, geneset)
-    if (existingResult.length>0) {
+    if (existingResult.length > 0) {
       return {
         error: `Result with method: ${method} and geneset: ${geneset} already exists.`,
       }
@@ -51,6 +52,29 @@ export class AppService {
     }
     db.get('results').push(resultToAdd).write()
     return resultToAdd
+  }
+
+  updateGeneSetResult(method: string, geneset: string, result: any): any {
+    const existingResult = this.getGeneSetResult(method, geneset)
+    if (existingResult.length > 0) {
+      this.removeGeneSetForAnalysis(method, geneset)
+    }
+    const found = this.getGeneSetResult(method, geneset).length > 0
+    if (found) {
+      return {
+        error: `Unable to remove geneset ${geneset} for method: ${method}.`,
+      }
+    }
+    return this.addGeneSetResult(method, geneset, result)
+  }
+
+  removeGeneSetForAnalysis(method: string, geneset: string) {
+    db.get('results')
+      .remove({
+        method: method,
+        geneset: geneset,
+      })
+      .write()
   }
 
   getGeneSetResult(method: string, geneset: string): any {
@@ -76,10 +100,12 @@ export class AppService {
   }
 
   getGeneSet(geneset: any) {
-    return db
-      .get('results')
-      .filter({ geneset: geneset })
-      .map((r) => r.geneset)
-      .value()
+    return (
+      db
+        .get('results')
+        .filter({ geneset: geneset })
+        // .map((r) => r.geneset)
+        .value()
+    )
   }
 }

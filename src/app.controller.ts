@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common'
+import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { AppService } from './app.service'
 
 @Controller()
@@ -31,11 +31,27 @@ export class AppController {
     return this.appService.getGeneSetResult(params.method, params.geneset)
   }
 
+  @Delete('/geneset/:method/:geneset')
+  removeGeneSetForAnalysis(@Param() params): any {
+    return this.appService.removeGeneSetForAnalysis(
+      params.method,
+      params.geneset,
+    )
+  }
+
   @Post('/geneset/:method/:geneset')
   addGeneSetResult(@Param() params): any {
     const geneset = params.geneset
     const method = params.method
     const result = params.result
     return this.appService.addGeneSetResult(method, geneset, result)
+  }
+
+  @Put('/geneset/:method/:geneset')
+  updateGeneSetResult(@Param() params): any {
+    const geneset = params.geneset
+    const method = params.method
+    const result = params.result
+    return this.appService.updateGeneSetResult(method, geneset, result)
   }
 }

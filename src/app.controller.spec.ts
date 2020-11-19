@@ -61,9 +61,11 @@ describe('AppController', () => {
 
     it('Get one gene set', () => {
       const TEST_GENE_SET = ['hallmark.gmt']
-      expect(appController.getGeneSet({ geneset: 'hallmark.gmt' })).toEqual(
-        TEST_GENE_SET,
-      )
+      expect(
+        appController
+          .getGeneSet({ geneset: 'hallmark.gmt' })
+          .map((g) => g.geneset),
+      ).toEqual(TEST_GENE_SET)
     })
 
     it('Add a gene set', () => {
@@ -81,26 +83,41 @@ describe('AppController', () => {
       expect(result2.error).toBeDefined()
     })
 
-    // it('If gene set already exists, then fail', () => {
-    //   // const TEST_GENE_SET = ['hallmark.gmt']
-    //   const params = {
-    //     geneset: 'h2.gmt',
-    //     method: 'BPA Gene Expression',
-    //     result: { data: 'data' },
-    //   }
-    //   appController.addGeneSetResult(params)
-    //   console.log('getting gene sets ')
-    //   const outputGeneSets = appService.getGeneSets()
-    //   console.log(outputGeneSets)
-    //   expect(appService.getGeneSets().length).toEqual(4)
-    //   expect(appService.getGeneSet('h2.gmt').result.data).toEqual('data')
-    // })
+    it('Test removing a geneset ', () => {
+      const params = {
+        geneset: 'h4.gmt',
+        method: 'BPA Gene Expression',
+        result: { data: 'data4' },
+      }
+      const result1 = appController.addGeneSetResult(params)
+      expect(result1.error).toBeUndefined()
+      expect(result1.result.data).toEqual('data4')
+      const result2 = appController.getGeneSet({ geneset: 'h4.gmt' })
+      expect(result2.error).toBeUndefined()
+      expect(result2[0].geneset).toEqual('h4.gmt')
+      expect(result2[0].result.data).toEqual('data4')
+      appController.removeGeneSetForAnalysis(params)
+      const result3 = appController.getGeneSet({ geneset: 'h4.gmt' })
+      expect(result3.length).toEqual(0)
+    })
 
-    // it('Update a gene set', () => {
-    //   const TEST_GENE_SET = ['hallmark.gmt']
-    //   expect(appController.getGeneSet({ geneset: 'hallmark.gmt' })).toEqual(
-    //     TEST_GENE_SET,
-    //   )
-    // })
+    it('Update a gene set', () => {
+      const params = {
+        geneset: 'h3.gmt',
+        method: 'BPA Gene Expression',
+        result: { data: 'data' },
+      }
+      const params2 = {
+        geneset: 'h3.gmt',
+        method: 'BPA Gene Expression',
+        result: { data: 'data2' },
+      }
+      const result1 = appController.addGeneSetResult(params)
+      expect(result1.error).toBeUndefined()
+      expect(result1.result.data).toEqual('data')
+      const result2 = appController.updateGeneSetResult(params2)
+      expect(result2.error).toBeUndefined()
+      expect(result2.result.data).toEqual('data2')
+    })
   })
 })
