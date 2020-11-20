@@ -26,9 +26,9 @@ describe('AppController (e2e)', () => {
 
   it('/ (POST)', () => {
     return request(app.getHttpServer())
-      .post('/geneset/asdf/lkjklj')
-      .send({ data: 'data' })
+      .post('/geneset')
+      .send({ method: 'asdf', geneset: 'lkjklj', result: 'data' })
       .expect(201)
-      .expect({ method: 'asdf', geneset: 'lkjklj', result: { data: 'data' } })
+      .expect({ method: 'asdf', geneset: 'lkjklj', result: 'data' })
   })
 })
