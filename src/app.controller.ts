@@ -41,20 +41,16 @@ export class AppController {
 
   @Post('/geneset')
   addGeneSetResult(@Body() data: any): any {
-    console.log('input data',data)
-    // const geneset = params.geneset
-    // const method = params.method
-    // // const result = data.result
-    // console.log('adding gene set results ')
-    // console.log(data)
-    // return this.appService.addGeneSetResult(method, geneset, data)
+    const geneset = data.geneset
+    const method = data.method
+    const result = data.result
+    return this.appService.addGeneSetResult(method, geneset, result)
   }
 
   @Put('/geneset/:method/:geneset')
-  updateGeneSetResult(@Param() params,@Body() data:any): any {
+  updateGeneSetResult(@Param() params, @Body() data: any): any {
     const geneset = params.geneset
     const method = params.method
-    // const result = data.result
     return this.appService.updateGeneSetResult(method, geneset, data)
   }
 }
