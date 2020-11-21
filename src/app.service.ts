@@ -15,15 +15,6 @@ export class AppService {
     return 'Hello World!asdf123'
   }
 
-  loadDB(path: string): any {
-    console.log('loading DB from ', path)
-  }
-
-  saveDB(data: any, path: string): any {
-    console.log('saving DB to ', path)
-    console.log('with data ', data)
-  }
-
   testDB(): any {
     const defaultDb = [
       {
@@ -89,64 +80,33 @@ export class AppService {
     memoryDb['results'] = memoryDb['results'].filter(
       (r) => r.method !== method || r.geneset != geneset,
     )
-
-    // memoryDb['results'].remove({
-    //   method: method,
-    //   geneset: geneset,
-    // })
   }
 
   getGeneSetResult(method: string, geneset: string): any {
     return memoryDb['results'].filter(
       (r) => r.method == method && r.geneset == geneset,
     )
-
-    // return db
-    //   .get('results')
-    //   .filter({ method: method, geneset: geneset })
-    //   .value()
   }
 
   getGeneSets() {
-    console.log('memorydb', memoryDb)
     return memoryDb['results'].map((r) => r.geneset)
-
-    // return db
-    //   .get('results')
-    //   .map((r) => r.geneset)
-    //   .value()
   }
 
   getGeneSetsForAnalysis(method: string) {
     return memoryDb['results']
       .filter((r) => r.method == method)
       .map((r) => r.geneset)
-
-    // return db
-    //   .get('results')
-    //   .filter({ method: method })
-    //   .map((r) => r.geneset)
-    //   .value()
   }
 
-  getGeneSet(geneset: any) {
+  getGeneSet(geneset: string) {
     return memoryDb['results'].filter((r) => r.geneset == geneset)
-
-    // return (
-    //   db
-    //     .get('results')
-    //     .filter({ geneset: geneset })
-    //     // .map((r) => r.geneset)
-    //     .value()
-    // )
   }
 
   loadGeneSetState(path: string): any {
     try {
       const rawData = fs.readFileSync(path)
-      console.log('loading path', path)
-      console.log('loaded data ', rawData)
       memoryDb = JSON.parse(rawData.toString())
+      return memoryDb
     } catch (e) {
       console.error(e)
     }
@@ -154,5 +114,6 @@ export class AppService {
 
   saveGeneSetState(path: string): any {
     fs.writeFileSync(path, JSON.stringify(memoryDb))
+    return memoryDb
   }
 }
