@@ -5,12 +5,21 @@ import { Injectable } from '@nestjs/common'
 // const adapter = new FileSync('db.json')
 // const db = low(adapter)
 
-let memoryDb = {}
+let memoryDb = { results: [] }
 
 @Injectable()
 export class AppService {
   getHello(): string {
     return 'Hello World!asdf123'
+  }
+
+  loadDB(path: string): any {
+    console.log('loading DB from ', path)
+  }
+
+  saveDB(data: any, path: string): any {
+    console.log('saving DB to ', path)
+    console.log('with data ', data)
   }
 
   testDB(): any {
@@ -38,7 +47,8 @@ export class AppService {
   initDB(): any {
     // Set some defaults (required if your JSON file is empty)
     // return db.defaults({ results: [] }).write()
-    return { results: [] }
+    memoryDb = { results: [] }
+    return memoryDb
   }
 
   addGeneSetResult(method: string, geneset: string, result: any): any {
@@ -96,6 +106,7 @@ export class AppService {
   }
 
   getGeneSets() {
+    console.log('memorydb', memoryDb)
     return memoryDb['results'].map((r) => r.geneset)
 
     // return db
