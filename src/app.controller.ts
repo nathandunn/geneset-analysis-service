@@ -53,4 +53,14 @@ export class AppController {
     const method = params.method
     return this.appService.updateGeneSetResult(method, geneset, data)
   }
+
+  @Post('/loadState/:path')
+  loadGeneSetState(@Param() params): any {
+    return this.appService.loadGeneSetState(params.path)
+  }
+
+  @Post('/saveState/:path')
+  saveGeneSetState(@Param() params): any {
+    return this.appService.saveGeneSetState(params.path)
+  }
 }

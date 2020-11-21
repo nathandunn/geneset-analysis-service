@@ -1,14 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
-import { exec } from 'child_process'
+import * as fs from 'fs'
 
 describe('AppController', () => {
   let appController: AppController
   let appService: AppService
 
   beforeAll(async () => {
-    exec('rm -f db.json')
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [AppService],
@@ -19,9 +18,10 @@ describe('AppController', () => {
     appService.testDB()
   })
 
-  afterAll(async () => {
-    exec('rm -f db.json')
+  beforeEach(() => {
+    appService.testDB()
   })
+
 
   describe('root', () => {
     it('should return "Hello World stuff!"', () => {
@@ -59,11 +59,11 @@ describe('AppController', () => {
         method: 'BPA Gene Expression',
         result: { data: 'data' },
       }
-      const result1 = appController.addGeneSetResult(params, params.result)
+      const result1 = appController.addGeneSetResult(params)
       expect(result1.error).toBeUndefined()
       expect(result1.result.data).toEqual('data')
       expect(appService.getGeneSets().length).toEqual(4)
-      const result2 = appController.addGeneSetResult(params, params.result)
+      const result2 = appController.addGeneSetResult(params)
       expect(result2.error).toBeDefined()
     })
 
@@ -73,7 +73,7 @@ describe('AppController', () => {
         method: 'BPA Gene Expression',
         result: { data: 'data4' },
       }
-      const result1 = appController.addGeneSetResult(params, params.result)
+      const result1 = appController.addGeneSetResult(params)
       expect(result1.error).toBeUndefined()
       expect(result1.result.data).toEqual('data4')
       const result2 = appController.getGeneSet({ geneset: 'h4.gmt' })
@@ -96,12 +96,42 @@ describe('AppController', () => {
         method: 'BPA Gene Expression',
         result: { data: 'data2' },
       }
-      const result1 = appController.addGeneSetResult(params, params.result)
+      const result1 = appController.addGeneSetResult(params)
       expect(result1.error).toBeUndefined()
       expect(result1.result.data).toEqual('data')
       const result2 = appController.updateGeneSetResult(params2, params2.result)
       expect(result2.error).toBeUndefined()
       expect(result2.result.data).toEqual('data2')
+    })
+
+    it('Load test ', () => {
+      const params = { path: 'test/test-db1.json' }
+      appController.loadGeneSetState(params)
+      const result2 = appController.getGeneSet({ geneset: 'bpaAlldef.gmt' })
+      expect(result2.length).toEqual(1)
+      expect(result2[0].result.value).toEqual('bpa all gmt def')
+    })
+
+    it('Save test ', () => {
+      // assume we are running the test now
+      const params2 = {
+        geneset: 'h3.gmt',
+        method: 'BPA Gene Expression',
+        result: { data: 'data2' },
+      }
+      appController.addGeneSetResult(params2)
+      const params = { path: '/tmp/test-dbasdf.json' }
+      appController.saveGeneSetState(params)
+      const result2 = appController.getGeneSet({ geneset: 'h3.gmt' })
+      expect(result2.length).toEqual(1)
+      expect(result2[0].result.data).toEqual('data2')
+      appController.loadGeneSetState({ path: 'test/test-db1.json' })
+      const result3 = appController.getGeneSet({ geneset: 'h3.gmt' })
+      expect(result3.length).toEqual(0)
+      appController.loadGeneSetState(params)
+      const result4 = appController.getGeneSet({ geneset: 'h3.gmt' })
+      expect(result4.length).toEqual(1)
+      fs.unlinkSync('/tmp/test-dbasdf.json')
     })
   })
 })
