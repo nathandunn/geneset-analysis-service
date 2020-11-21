@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common'
 
-import low = require('lowdb')
-import FileSync = require('lowdb/adapters/FileSync')
-const adapter = new FileSync('db.json')
-const db = low(adapter)
+// import low = require('lowdb')
+// import FileSync = require('lowdb/adapters/FileSync')
+// const adapter = new FileSync('db.json')
+// const db = low(adapter)
+
+let memoryDb = {}
 
 @Injectable()
 export class AppService {
@@ -29,12 +31,14 @@ export class AppService {
         result: { value: 'bpa all gmt' },
       },
     ]
-    return db.defaults({ results: defaultDb }).write()
+    // return db.defaults({ results: defaultDb }).write()
+    memoryDb = { results: defaultDb }
   }
 
   initDB(): any {
     // Set some defaults (required if your JSON file is empty)
-    return db.defaults({ results: [] }).write()
+    // return db.defaults({ results: [] }).write()
+    return { results: [] }
   }
 
   addGeneSetResult(method: string, geneset: string, result: any): any {
@@ -50,7 +54,8 @@ export class AppService {
       geneset: geneset,
       result: result,
     }
-    db.get('results').push(resultToAdd).write()
+    // db.get('results').push(resultToAdd).write()
+    memoryDb['results'].push(resultToAdd)
     return resultToAdd
   }
 
@@ -69,43 +74,57 @@ export class AppService {
   }
 
   removeGeneSetForAnalysis(method: string, geneset: string) {
-    db.get('results')
-      .remove({
-        method: method,
-        geneset: geneset,
-      })
-      .write()
+    memoryDb['results'] = memoryDb['results'].filter(
+      (r) => r.method !== method || r.geneset != geneset,
+    )
+
+    // memoryDb['results'].remove({
+    //   method: method,
+    //   geneset: geneset,
+    // })
   }
 
   getGeneSetResult(method: string, geneset: string): any {
-    return db
-      .get('results')
-      .filter({ method: method, geneset: geneset })
-      .value()
+    return memoryDb['results'].filter(
+      (r) => r.method == method && r.geneset == geneset,
+    )
+
+    // return db
+    //   .get('results')
+    //   .filter({ method: method, geneset: geneset })
+    //   .value()
   }
 
   getGeneSets() {
-    return db
-      .get('results')
-      .map((r) => r.geneset)
-      .value()
+    return memoryDb['results'].map((r) => r.geneset)
+
+    // return db
+    //   .get('results')
+    //   .map((r) => r.geneset)
+    //   .value()
   }
 
   getGeneSetsForAnalysis(method: string) {
-    return db
-      .get('results')
-      .filter({ method: method })
+    return memoryDb['results']
+      .filter((r) => r.method == method)
       .map((r) => r.geneset)
-      .value()
+
+    // return db
+    //   .get('results')
+    //   .filter({ method: method })
+    //   .map((r) => r.geneset)
+    //   .value()
   }
 
   getGeneSet(geneset: any) {
-    return (
-      db
-        .get('results')
-        .filter({ geneset: geneset })
-        // .map((r) => r.geneset)
-        .value()
-    )
+    return memoryDb['results'].filter((r) => r.geneset == geneset)
+
+    // return (
+    //   db
+    //     .get('results')
+    //     .filter({ geneset: geneset })
+    //     // .map((r) => r.geneset)
+    //     .value()
+    // )
   }
 }

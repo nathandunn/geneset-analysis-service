@@ -2,13 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { exec } from 'child_process'
+import {Body} from "@nestjs/common";
 
 describe('AppController', () => {
   let appController: AppController
   let appService: AppService
 
   beforeAll(async () => {
-    exec('rm -f db.json')
+    // exec('rm -f db.json')
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [AppService],
@@ -19,8 +20,12 @@ describe('AppController', () => {
     appService.testDB()
   })
 
+  beforeEach(() => {
+    appService.testDB()
+  })
+
   afterAll(async () => {
-    exec('rm -f db.json')
+    // exec('rm -f db.json')
   })
 
   describe('root', () => {
@@ -59,11 +64,11 @@ describe('AppController', () => {
         method: 'BPA Gene Expression',
         result: { data: 'data' },
       }
-      const result1 = appController.addGeneSetResult(params, params.result)
+      const result1 = appController.addGeneSetResult(params)
       expect(result1.error).toBeUndefined()
       expect(result1.result.data).toEqual('data')
       expect(appService.getGeneSets().length).toEqual(4)
-      const result2 = appController.addGeneSetResult(params, params.result)
+      const result2 = appController.addGeneSetResult(params)
       expect(result2.error).toBeDefined()
     })
 
