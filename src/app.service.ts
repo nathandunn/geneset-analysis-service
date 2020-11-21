@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common'
+import * as fs from 'fs'
+// const fs = require('fs')
 
 // import low = require('lowdb')
 // import FileSync = require('lowdb/adapters/FileSync')
@@ -137,5 +139,20 @@ export class AppService {
     //     // .map((r) => r.geneset)
     //     .value()
     // )
+  }
+
+  loadGeneSetState(path: string): any {
+    try {
+      const rawData = fs.readFileSync(path)
+      console.log('loading path', path)
+      console.log('loaded data ', rawData)
+      memoryDb = JSON.parse(rawData.toString())
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  saveGeneSetState(path: string): any {
+    fs.writeFileSync(path, JSON.stringify(memoryDb))
   }
 }

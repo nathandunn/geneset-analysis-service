@@ -2,7 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { exec } from 'child_process'
-import {Body} from "@nestjs/common";
+import { Body } from '@nestjs/common'
+import fs from 'fs'
 
 describe('AppController', () => {
   let appController: AppController
@@ -78,7 +79,7 @@ describe('AppController', () => {
         method: 'BPA Gene Expression',
         result: { data: 'data4' },
       }
-      const result1 = appController.addGeneSetResult(params, params.result)
+      const result1 = appController.addGeneSetResult(params)
       expect(result1.error).toBeUndefined()
       expect(result1.result.data).toEqual('data4')
       const result2 = appController.getGeneSet({ geneset: 'h4.gmt' })
@@ -101,12 +102,29 @@ describe('AppController', () => {
         method: 'BPA Gene Expression',
         result: { data: 'data2' },
       }
-      const result1 = appController.addGeneSetResult(params, params.result)
+      const result1 = appController.addGeneSetResult(params)
       expect(result1.error).toBeUndefined()
       expect(result1.result.data).toEqual('data')
       const result2 = appController.updateGeneSetResult(params2, params2.result)
       expect(result2.error).toBeUndefined()
       expect(result2.result.data).toEqual('data2')
+    })
+
+    it('Load test ', () => {
+      const params = { path: 'test-db1.json' }
+      appController.loadGeneSetState(params)
+      const result2 = appController.getGeneSet({ geneset: 'bpaAlldef.gmt' })
+      console.log('result2', result2)
+      expect(result2.result.value).toEqual('bpa all gmt def')
+    })
+
+    it('Save test ', () => {
+      const params = { path: 'test-dbasdf.json' }
+      appController.saveGeneSetState(params)
+      fs.rmSync('test/test-dbasdf.json')
+      const result2 = appController.getGeneSet({ geneset: 'bpaAlldef.gmt' })
+      console.log('result2', result2)
+      expect(result2.result.value).toEqual('bpa all gmt def')
     })
   })
 })
