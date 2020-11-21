@@ -1,11 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import * as fs from 'fs'
-// const fs = require('fs')
-
-// import low = require('lowdb')
-// import FileSync = require('lowdb/adapters/FileSync')
-// const adapter = new FileSync('db.json')
-// const db = low(adapter)
 
 let memoryDb = { results: [] }
 

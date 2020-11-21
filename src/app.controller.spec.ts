@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
-import { exec } from 'child_process'
-import { Body } from '@nestjs/common'
 import * as fs from 'fs'
 
 describe('AppController', () => {
@@ -10,7 +8,6 @@ describe('AppController', () => {
   let appService: AppService
 
   beforeAll(async () => {
-    // exec('rm -f db.json')
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [AppService],
@@ -25,9 +22,6 @@ describe('AppController', () => {
     appService.testDB()
   })
 
-  afterAll(async () => {
-    // exec('rm -f db.json')
-  })
 
   describe('root', () => {
     it('should return "Hello World stuff!"', () => {
@@ -125,7 +119,7 @@ describe('AppController', () => {
         method: 'BPA Gene Expression',
         result: { data: 'data2' },
       }
-      const result1 = appController.addGeneSetResult(params2)
+      appController.addGeneSetResult(params2)
       const params = { path: '/tmp/test-dbasdf.json' }
       appController.saveGeneSetState(params)
       const result2 = appController.getGeneSet({ geneset: 'h3.gmt' })
