@@ -34,8 +34,10 @@ export class AppService {
 
   initDB(): any {
     // Set some defaults (required if your JSON file is empty)
+    console.log('initializing DB')
     return db.defaults({ results: [] }).write()
   }
+
 
   addGeneSetResult(method: string, geneset: string, result: any): any {
     // console.log('adding gene set result', method, geneset, result)
